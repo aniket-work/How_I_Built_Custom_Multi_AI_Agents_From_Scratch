@@ -1,0 +1,3 @@
+streamlit
+griptape[all]
+duckduckgo_search
