@@ -1,8 +1,10 @@
 import streamlit as st
 import json
 import os
-from src.main import run_workflow
 import time
+from src.main import run_workflow
+import threading
+import queue
 
 def load_config():
     config_path = 'config/config.json'
@@ -25,27 +27,27 @@ def setup_page():
         "researcher": {
             "id": "researcher",
             "rules": [
-                {"type": "Position", "value": "Lead Research Analyst"},
+                {"type": "Position", "value": "Lead Travel Researcher"},
                 {"type": "Objective",
-                 "value": "Find most suitable travel places in summer in Canada."},
+                 "value": "Discover innovative advancements in artificial intelligence and data analytics."},
                 {"type": "Background",
-                 "value": "You belong to a leading travel research institution. Your expertise lies in uncovering emerging travel trends and insights. You excel in dissecting detailed data and providing practical, actionable recommendations."}
+                 "value": "You are part of a prominent technology research institute. Your speciality is spotting new trends. You excel at analyzing intricate data and delivering practical insights."}
             ],
-            "task_prompt": "Conduct a comprehensive review of the latest advancements in travel and tourism for 2024. Identify key trends, innovations, and their effects on different travel destinations and experiences."
+            "task_prompt": "Perform a detailed examination of the newest developments in AI as of 2024. Pinpoint major trends, breakthroughs, and their implications for various industries."
         },
         "writers": [
             {
-                "role": "Travel Enthusiast Blogger",
-                "goal": "Encourage exploration by sharing captivating stories about undiscovered travel spots and unique destinations.",
-                "backstory": "Having traveled extensively, you bring diverse cultures and stunning landscapes to life through engaging narratives and personal experiences."
+                "role": "Travel Adventure Blogger",
+                "goal": "Inspire wanderlust with stories of hidden gems and exotic locales",
+                "backstory": "With a passport full of stamps, you bring distant cultures and breathtaking scenes to life through vivid storytelling and personal anecdotes."
             },
             {
-                "role": "Freelance Lifestyle Journalist",
-                "goal": "Offer useful tips for achieving a stylish and balanced travel lifestyle.",
-                "backstory": "From the newest travel accessories to wellness advice for travelers, your writings help readers enjoy a fulfilling and stylish travel experience."
+                "role": "Lifestyle Freelance Writer",
+                "goal": "Share practical advice on living a balanced and stylish life",
+                "backstory": "From the latest trends in home decor to tips for wellness, your articles help readers create a life that feels both aspirational and attainable."
             }
         ],
-        "writer_task_prompt": "Using the provided insights, craft an engaging blog post that showcases the most notable travel innovations. Your article should be both informative and easy to understand, appealing to a travel-enthusiastic audience. Aim for a cool tone and steer clear of overly technical language..\n\nInsights:\n{{ parent_outputs['research'] }}",
+        "writer_task_prompt": "Using insights provided, develop an engaging blog post that highlights the most significant AI advancements. Your post should be informative yet accessible, catering to a tech-savvy audience. Make it sound cool, avoid complex words so it doesn't sound like AI.\n\nInsights:\n{{ parent_outputs['research'] }}",
         "end_task_prompt": "State: All Done!"
     }
 
@@ -95,25 +97,40 @@ def run_page():
         output_placeholder.text("Running workflow...")
 
         # Run the workflow in a separate thread to avoid blocking the UI
-        result, log_file = run_workflow()
+        def run_workflow_thread(queue):
+            result, log_file = run_workflow()
+            queue.put((result, log_file))
 
-        # Stream the log file content
-        with output_placeholder.container():
-            while True:
-                if os.path.exists(log_file):
-                    with open(log_file, 'r') as f:
-                        content = f.read()
-                        st.text_area("Workflow Output:", value=content, height=300)
-                    if "All Done!" in content:  # Assuming this is how we know the workflow is complete
-                        break
-                time.sleep(1)  # Wait for 1 second before checking again
+        workflow_queue = queue.Queue()
+        threading.Thread(target=run_workflow_thread, args=(workflow_queue,)).start()
+
+        log_file = None
+        while True:
+            try:
+                if not workflow_queue.empty():
+                    result, log_file = workflow_queue.get()
+                    break
+            except queue.Empty:
+                pass
+
+            if log_file and os.path.exists(log_file):
+                with open(log_file, 'r') as f:
+                    content = f.read()
+                    output_placeholder.text_area("Workflow Output:", value=content, height=300)
+                if "All Done!" in content:  # Assuming this is how we know the workflow is complete
+                    break
+            time.sleep(1)  # Wait for 1 second before checking again
 
         st.success("Workflow completed!")
 
         if result:
             result_placeholder.subheader("Workflow Result:")
             result_placeholder.write(result)
-        os.remove(log_file)
+        if log_file:
+            try:
+                os.remove(log_file)
+            except PermissionError:
+                st.error("The log file is still in use and cannot be removed.")
 
 def main():
     st.sidebar.title("Navigation")

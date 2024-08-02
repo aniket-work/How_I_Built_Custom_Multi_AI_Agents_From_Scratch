@@ -77,9 +77,7 @@ In this project, we'll build a Simple AI Agent that performs "Text Analysis". Th
    - Run the Streamlit app:
    
      ```bash
-     python -m src.main
-     
-     streamlit run Our_Simple_Agent.py
+     streamlit run streamlit_app.py
      ```
 
    This will start a local web server and open the AI agent interface in your default web browser.
