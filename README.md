@@ -1,5 +1,8 @@
  # 🏢 Let's Build: A Simple Platform to Create Custom AI Agents for Any Task 🏢
 
+
+Full Article : https://medium.com/@learn-simplified/lets-build-a-simple-platform-to-create-custom-ai-agents-for-any-task-d6c8e83549fa
+
 ## What is this article about?
 This article is about a sophisticated AI-powered content creation system. It describes a flexible and customizable workflow that combines AI research and writing capabilities. The system uses a team of AI agents: a researcher who gathers information on a given topic, and multiple writers who create diverse content based on this research.
 The article explains how this system is built using advanced AI libraries and tools. It shows how the workflow can be easily configured through a simple file, allowing users to adjust the AI agents' behaviors, prompts, and output styles without needing to change the underlying code. This makes it adaptable for various content needs, from blog posts to reports on different topics.
