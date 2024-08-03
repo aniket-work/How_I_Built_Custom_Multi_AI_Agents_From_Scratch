@@ -21,7 +21,7 @@ def run_workflow():
     team = create_team_workflow(workflow_config)
 
     # Set up logging to write to a file
-    log_file = 'workflow_output.log'
+    log_file = 'workflow_output.log.txt'
     logging.basicConfig(filename=log_file, level=logging.INFO,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                         filemode='w')  # 'w' mode overwrites the file each time

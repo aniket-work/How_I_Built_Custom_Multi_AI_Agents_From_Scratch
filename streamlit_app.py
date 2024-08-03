@@ -22,34 +22,35 @@ def setup_page():
     st.title("Configuration Setup")
 
     config = load_config() or {
-        "search_tool": {"max_results": 5},
-        "ollama": {"model": "llama3"},
-        "researcher": {
-            "id": "researcher",
-            "rules": [
-                {"type": "Position", "value": "Lead Travel Researcher"},
-                {"type": "Objective",
-                 "value": "Discover innovative advancements in artificial intelligence and data analytics."},
-                {"type": "Background",
-                 "value": "You are part of a prominent technology research institute. Your speciality is spotting new trends. You excel at analyzing intricate data and delivering practical insights."}
-            ],
-            "task_prompt": "Perform a detailed examination of the newest developments in AI as of 2024. Pinpoint major trends, breakthroughs, and their implications for various industries."
-        },
-        "writers": [
-            {
-                "role": "Travel Adventure Blogger",
-                "goal": "Inspire wanderlust with stories of hidden gems and exotic locales",
-                "backstory": "With a passport full of stamps, you bring distant cultures and breathtaking scenes to life through vivid storytelling and personal anecdotes."
-            },
-            {
-                "role": "Lifestyle Freelance Writer",
-                "goal": "Share practical advice on living a balanced and stylish life",
-                "backstory": "From the latest trends in home decor to tips for wellness, your articles help readers create a life that feels both aspirational and attainable."
-            }
+    "search_tool": {"max_results": 5},
+    "ollama": {"model": "llama3"},
+    "researcher": {
+        "id": "explorer",
+        "rules": [
+            {"type": "Position", "value": "Chief Travel Explorer"},
+            {"type": "Objective",
+             "value": "Uncover the latest travel trends and destination insights."},
+            {"type": "Background",
+             "value": "You are a part of a leading travel consultancy. Your expertise lies in discovering new travel experiences and trends. You have a knack for turning data into compelling travel recommendations."}
         ],
-        "writer_task_prompt": "Using insights provided, develop an engaging blog post that highlights the most significant AI advancements. Your post should be informative yet accessible, catering to a tech-savvy audience. Make it sound cool, avoid complex words so it doesn't sound like AI.\n\nInsights:\n{{ parent_outputs['research'] }}",
-        "end_task_prompt": "State: All Done!"
-    }
+        "task_prompt": "Conduct an in-depth analysis of current travel trends and emerging destinations for 2024. Highlight key trends, must-visit places, and their appeal to different types of travelers."
+    },
+    "writers": [
+        {
+            "role": "Cultural Travel Writer",
+            "goal": "Reveal the rich cultural experiences of various destinations",
+            "backstory": "Having explored numerous countries, you immerse readers in the traditions, festivals, and daily lives of the places you visit."
+        },
+        {
+            "role": "Adventure Travel Enthusiast",
+            "goal": "Guide thrill-seekers to the best adventure destinations",
+            "backstory": "From mountain climbing to deep-sea diving, you share firsthand experiences and tips for adrenaline-filled adventures."
+        }
+    ],
+    "writer_task_prompt": "Using the provided insights, craft a captivating blog post that explores the hottest travel trends and destinations of 2024. Your article should be engaging and easy to read, appealing to a broad audience of travel enthusiasts. Infuse it with excitement and avoid overly technical language.\n\nInsights:\n{{ parent_outputs['research'] }}",
+    "end_task_prompt": "State: Adventure Awaits!"
+}
+
 
     with st.form("config_form"):
         st.subheader("Search Tool")
